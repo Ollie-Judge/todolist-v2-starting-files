@@ -17,8 +17,6 @@ mongoose.connect("mongodb://localhost:27017/todolistDB");
 
 const itemsSchema = new mongoose.Schema({
   name: String,
-  rating: { type: Number, min: 0, max: 10 },
-  review: String,
 });
 
 const Item = mongoose.model("Item", itemsSchema);
@@ -34,13 +32,15 @@ const defaultItems = [item1, item2, item3];
 Item.insertMany(defaultItems)
   .then(console.log("Item successfully saved to the database"))
   .catch((err) => console.log("ERROR :", err));
+
 /*const items = ["Buy Food", "Cook Food", "Eat Food"];
 const workItems = [];
 */
 app.get("/", function (req, res) {
   const day = date.getDate();
-  Item.find({}).then((foundItem) => console.log(foundItem));
-  res.render("list", { listTitle: "Today", newListItems: items });
+  Item.find({}).then((foundItem) =>
+    res.render("list.ejs", { listTitle: "Today", newListItems: foundItem })
+  );
 });
 
 app.post("/", function (req, res) {
@@ -50,7 +50,7 @@ app.post("/", function (req, res) {
     workItems.push(item);
     res.redirect("/work");
   } else {
-    items.push(item);
+    Item.push(item);
     res.redirect("/");
   }
 });
