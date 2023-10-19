@@ -100,11 +100,20 @@ app.post("/", function (req, res) {
 
 app.post("/delete", function (req, res) {
   const checkedItemId = req.body.checkbox;
-  const listName = req.body.list;
+  const listName = req.body.listName;
 
-  Item.findByIdAndDelete(checkedItemId)
-    .then(console.log("Item successfully deleted"))
-    .catch((err) => console.log("ERROR :", err));
+  if (listName === day) {
+    Item.findByIdAndDelete(checkedItemId)
+      .then(console.log("Item successfully deleted"))
+      .catch((err) => console.log("ERROR :", err));
+  } else {
+    List.findOneAndUpdate(
+      { name: listName },
+      { $pull: { items: { _id: checkedItemId } } }
+    )
+      .then(res.redirect("/" + listName))
+      .catch((err) => console.log("ERROR :", err));
+  }
 
   res.redirect("/");
 });
