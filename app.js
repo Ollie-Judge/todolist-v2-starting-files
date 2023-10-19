@@ -114,8 +114,6 @@ app.post("/delete", function (req, res) {
       .then(res.redirect("/" + listName))
       .catch((err) => console.log("ERROR :", err));
   }
-
-  res.redirect("/");
 });
 
 app.get("/work", function (req, res) {
