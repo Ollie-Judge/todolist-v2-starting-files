@@ -29,30 +29,73 @@ const item3 = new Item({ name: "<-- hit this to delete an item" });
 
 const defaultItems = [item1, item2, item3];
 
-Item.insertMany(defaultItems)
-  .then(console.log("Item successfully saved to the database"))
-  .catch((err) => console.log("ERROR :", err));
+const listSchema = {
+  name: String,
+  items: [itemsSchema],
+};
+
+const List = mongoose.model("List", listSchema);
 
 /*const items = ["Buy Food", "Cook Food", "Eat Food"];
 const workItems = [];
 */
+
 app.get("/", function (req, res) {
   const day = date.getDate();
-  Item.find({}).then((foundItem) =>
-    res.render("list.ejs", { listTitle: "Today", newListItems: foundItem })
-  );
+  Item.find({}).then((foundItem) => {
+    if (foundItem.length === 0) {
+      Item.insertMany(defaultItems)
+        .then(console.log("Item successfully saved to the database"))
+        .catch((err) => console.log("ERROR :", err));
+      res.redirect("/");
+    } else {
+      res.render("list.ejs", { listTitle: day, newListItems: foundItem });
+    }
+  });
+});
+
+app.get("/:customListName", function (req, res) {
+  const customListName = req.params.customListName;
+
+  List.findOne({ name: customListName })
+    .then(function (foundList) {
+      if (!foundList) {
+        const list = new List({
+          name: customListName,
+          items: defaultItems,
+        });
+
+        list.save();
+        res.redirect("/" + customListName);
+      } else {
+        res.render("list.ejs", {
+          listTitle: foundList.name,
+          newListItems: foundList.items,
+        });
+      }
+    })
+    .catch((err) => console.log("ERROR :", err));
 });
 
 app.post("/", function (req, res) {
-  const item = req.body.newItem;
+  const itemName = req.body.newItem;
 
-  if (req.body.list === "Work") {
-    workItems.push(item);
-    res.redirect("/work");
-  } else {
-    Item.push(item);
-    res.redirect("/");
-  }
+  const item = new Item({
+    name: itemName,
+  });
+
+  item.save();
+  res.redirect("/");
+});
+
+app.post("/delete", function (req, res) {
+  const checkedItemId = req.body.checkbox;
+
+  Item.findByIdAndDelete(checkedItemId)
+    .then(console.log("Item successfully deleted"))
+    .catch((err) => console.log("ERROR :", err));
+
+  res.redirect("/");
 });
 
 app.get("/work", function (req, res) {
