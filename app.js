@@ -3,6 +3,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const _ = require("lodash");
+//require("dotenv").config;
 
 const mongoose = require("mongoose");
 const date = require(__dirname + "/date.js");
@@ -15,16 +16,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 //mongoose.connect("mongodb://localhost:27017/todolistDB");
-mongoose
-  .connect(
-    "mongodb+srv://olliejudge:3m6w6DnsFzqLIcwR@cluster0.tnavtna.mongodb.net/todolistDB"
-  )
-  .then(() => {
-    console.log(`successfully connected`);
-  })
-  .catch((e) => {
-    console.log(`not connected`);
-  });
+const connectDB = require("./connectMongo");
+
+connectDB();
 
 const itemsSchema = new mongoose.Schema({
   name: String,
@@ -143,5 +137,5 @@ if (port == null || port == "") {
 }
 
 app.listen(port, function () {
-  console.log("Server started successfully");
+  console.log(`Server started successfully on ${port}`);
 });
