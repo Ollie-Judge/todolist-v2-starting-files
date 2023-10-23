@@ -20,17 +20,10 @@ mongoose
     "mongodb+srv://olliejudge:3m6w6DnsFzqLIcwR@cluster0.tnavtna.mongodb.net/todolistDB"
   )
   .then(() => {
-    let port = process.env.PORT;
-    if (port == null || port == "") {
-      port = 3000;
-    }
-
-    app.listen(port, function () {
-      console.log("Server started successfully");
-    });
+    console.log(`successfully connected`);
   })
   .catch((e) => {
-    console.log(`not connected${e}`);
+    console.log(`not connected`);
   });
 
 const itemsSchema = new mongoose.Schema({
@@ -142,4 +135,13 @@ app.get("/work", function (req, res) {
 
 app.get("/about", function (req, res) {
   res.render("about");
+});
+
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 3000;
+}
+
+app.listen(port, function () {
+  console.log("Server started successfully");
 });
