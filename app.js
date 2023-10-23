@@ -20,7 +20,7 @@ mongoose
     "mongodb+srv://olliejudge:3m6w6DnsFzqLIcwR@cluster0.tnavtna.mongodb.net/todolistDB"
   )
   .catch((e) => {
-    console.log(`not connected`);
+    console.log(`not connected${e}`);
   });
 
 const itemsSchema = new mongoose.Schema({
@@ -98,11 +98,13 @@ app.post("/", function (req, res) {
     item.save();
     res.redirect("/");
   } else {
-    List.findOne({ name: listName }).then((foundList) => {
-      foundList.items.push(item);
-      foundList.save();
-      res.redirect("/" + listName);
-    });
+    List.findOne({ name: listName })
+      .then((foundList) => {
+        foundList.items.push(item);
+        foundList.save();
+        res.redirect("/" + listName);
+      })
+      .catch((err) => console.log("ERROR :", err));
   }
 });
 
