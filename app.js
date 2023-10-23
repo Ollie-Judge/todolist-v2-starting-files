@@ -19,6 +19,7 @@ mongoose
   .connect(
     "mongodb+srv://olliejudge:3m6w6DnsFzqLIcwR@cluster0.tnavtna.mongodb.net/todolistDB"
   )
+  .then(() => console.log("connected"))
   .catch((e) => {
     console.log(`not connected${e}`);
   });
