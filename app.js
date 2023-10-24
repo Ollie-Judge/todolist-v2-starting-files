@@ -17,16 +17,18 @@ app.use(express.static("public"));
 //mongoose.connect("mongodb://localhost:27017/todolistDB")
 const connectDB = require("./connectMongo");
 
-connectDB().then(() => {
-  let port = process.env.PORT;
-  if (port == null || port == "") {
-    port = 3000;
-  }
+connectDB()
+  .then(() => {
+    let port = process.env.PORT;
+    if (port == null || port == "") {
+      port = 3000;
+    }
 
-  app.listen(port, async () => {
-    console.log(`Server started successfully on ${port}`);
-  });
-});
+    app.listen(port, async () => {
+      console.log(`Server started successfully on ${port}`);
+    });
+  })
+  .catch((err) => console.log("ERROR :", err));
 
 const itemsSchema = new mongoose.Schema({
   name: String,
