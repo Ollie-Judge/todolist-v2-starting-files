@@ -1,14 +1,13 @@
-//jshint esversion:6
-
 const express = require("express");
 const bodyParser = require("body-parser");
 const _ = require("lodash");
-//require("dotenv").config;
 
 const mongoose = require("mongoose");
 const date = require(__dirname + "/date.js");
 
 const app = express();
+
+require("dotenv").config();
 
 app.set("view engine", "ejs");
 
@@ -17,7 +16,6 @@ app.use(express.static("public"));
 
 //mongoose.connect("mongodb://localhost:27017/todolistDB");
 const connectDB = require("./connectMongo");
-
 connectDB();
 
 const itemsSchema = new mongoose.Schema({
@@ -47,12 +45,15 @@ const day = date.getDate();
 const workItems = [];
 */
 
-app.get("/", function (req, res) {
+app.get("/", async (req, res) => {
   Item.find({}).then((foundItem) => {
     if (foundItem.length === 0) {
-      Item.insertMany(defaultItems)
-        .then(console.log("Item successfully saved to the database"))
-        .catch((err) => console.log("ERROR :", err));
+      try {
+        Item.insertMany(defaultItems);
+        console.log("Item successfully saved to the database");
+      } catch (err) {
+        console.log("ERROR :", err);
+      }
       res.redirect("/");
     } else {
       res.render("list.ejs", { listTitle: day, newListItems: foundItem });
