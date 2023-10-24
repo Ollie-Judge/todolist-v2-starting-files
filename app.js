@@ -3,7 +3,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const _ = require("lodash");
-//require("dotenv").config;
+require("dotenv").config;
 
 const mongoose = require("mongoose");
 const date = require(__dirname + "/date.js");
@@ -17,7 +17,7 @@ app.use(express.static("public"));
 
 //mongoose.connect("mongodb://localhost:27017/todolistDB");
 const connectDB = require("./connectMongo");
-
+//mongoose.set("bufferCommands", false);
 connectDB();
 
 const itemsSchema = new mongoose.Schema({
@@ -42,10 +42,6 @@ const listSchema = {
 const List = mongoose.model("List", listSchema);
 
 const day = date.getDate();
-
-/*const items = ["Buy Food", "Cook Food", "Eat Food"];
-const workItems = [];
-*/
 
 app.get("/", function (req, res) {
   Item.find({}).then((foundItem) => {
