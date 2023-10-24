@@ -9,7 +9,6 @@ const connectDB = async () => {
       });
     })
     .catch((err) => console.log(err));
-  console.log("Successfully connected to MongoDB");
 };
 
 module.exports = connectDB;
