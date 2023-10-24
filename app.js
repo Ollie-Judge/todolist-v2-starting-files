@@ -15,9 +15,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 //mongoose.connect("mongodb://localhost:27017/todolistDB")
-//const connectDB = require("./connectMongo");
+const connectDB = require("./connectMongo");
 
-//connectDB();
+connectDB();
 
 const itemsSchema = new mongoose.Schema({
   name: String,
@@ -58,7 +58,7 @@ app.get("/", async (req, res) => {
   });
 });
 
-app.get("/:customListName", function (req, res) {
+app.get("/:customListName", async (req, res) => {
   const customListName = _.capitalize(req.params.customListName);
 
   List.findOne({ name: customListName })
@@ -81,7 +81,7 @@ app.get("/:customListName", function (req, res) {
     .catch((err) => console.log("ERROR :", err));
 });
 
-app.post("/", function (req, res) {
+app.post("/", async (req, res) => {
   const itemName = req.body.newItem;
   const listName = req.body.list;
 
@@ -103,7 +103,7 @@ app.post("/", function (req, res) {
   }
 });
 
-app.post("/delete", function (req, res) {
+app.post("/delete", async (req, res) => {
   const checkedItemId = req.body.checkbox;
   const listName = req.body.listName;
 
@@ -121,11 +121,11 @@ app.post("/delete", function (req, res) {
   }
 });
 
-app.get("/work", function (req, res) {
+app.get("/work", async (req, res) => {
   res.render("list", { listTitle: "Work List", newListItems: workItems });
 });
 
-app.get("/about", function (req, res) {
+app.get("/about", async (req, res) => {
   res.render("about");
 });
 
@@ -133,11 +133,7 @@ let port = process.env.PORT;
 if (port == null || port == "") {
   port = 3000;
 }
-mongoose
-  .connect(process.env.MONGO_CONNECT_URI)
-  .then(() => {
-    app.listen(port, function () {
-      console.log(`Server started successfully on ${port}`);
-    });
-  })
-  .catch((err) => console.log(err));
+
+app.listen(port, async () => {
+  console.log(`Server started successfully on ${port}`);
+});
